@@ -1,8 +1,11 @@
 package com.example.myapplication;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,11 +16,15 @@ public class MainActivity extends AppCompatActivity {
 
     EditText edtcaja1,edtcaja2;
 
+
+    Spinner spin;
+
     TextView txtresultado;
 
     Button btncalculadora;
 
     Button limpiar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +36,18 @@ public class MainActivity extends AppCompatActivity {
         txtresultado = findViewById(R.id.txtResultado);
         limpiar = findViewById(R.id.limpiar);
         btncalculadora = findViewById(R.id.btncalculadora);
+        spin = findViewById(R.id.spin);
+
+
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this,
+                R.array.Procesos,
+                android.R.layout.simple_spinner_item
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spin.setAdapter(adapter);
+
 
 
         limpiar.setOnClickListener(new View.OnClickListener() {
@@ -47,11 +66,17 @@ public class MainActivity extends AppCompatActivity {
         });
         }
 
+
+
+
     private void limpiar() {
         edtcaja1.setText("");
         edtcaja2.setText("");
         txtresultado.setText("0");
     }
+
+
+
 
     private void calculadora(){
             String caja1 = edtcaja1.getText().toString();
@@ -59,15 +84,39 @@ public class MainActivity extends AppCompatActivity {
 
             if (caja1.isEmpty() || caja2.isEmpty()) {
                 Toast.makeText(MainActivity.this, "Debes llenar todos los campos", Toast.LENGTH_LONG).show();
-            }else{
+            }else {
 
                 int num1 = Integer.parseInt(caja1);
                 int num2 = Integer.parseInt(caja2);
 
 
-                int resultado = num1 + num2;
+                double total = 0;
+                String opspinner = spin.getSelectedItem().toString();
+                switch (opspinner) {
+                    case "+":
+                        total = num1 + num2;
+                        break;
+                    case "-":
+                        total = num1 - num2;
+                        break;
+                    case "*":
+                        total = num1 * num2;
+                        break;
+                    case "/":
+                        total = (num1 / num2);
+                        break;
+                    default:
+                        Toast.makeText(MainActivity.this, "invalido", Toast.LENGTH_LONG).show();
 
-                txtresultado.setText(resultado+"");
+                }
+
+
+                Intent intent = new Intent(MainActivity.this, Pantallaresultado.class);
+                intent.putExtra("total", total);
+                startActivity(intent);
+
+
+
 
 
 
@@ -75,4 +124,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+
+
 }
